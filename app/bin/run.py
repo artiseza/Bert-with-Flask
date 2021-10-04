@@ -1,7 +1,6 @@
 from flask import Flask, request, render_template, send_file, jsonify
 from rule_base import risk_rule_base,checkbox_rule_base
 from predictor import set_init,inference
-
 import base64
 import json
 
