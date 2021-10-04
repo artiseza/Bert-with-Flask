@@ -76,8 +76,3 @@ def checkbox_rule_base(jsonData,prob):
     else:
         result.append('請注意!若擅自更改原審內容或超出規定範圍時，可能違反藥事法第66-2條廣告與表定內容不符')
     return result
-
-# test risk_rule_base
-# text = '我們的產品根治你的毛病'
-# ans,evl = risk_rule_base(text)
-# print("ANS : ",ans,evl)
