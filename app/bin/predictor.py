@@ -209,24 +209,3 @@ def inference(pred_data,tokenizer,estimator):
 # tokenizer,estimator = set_init()
 # prob,keywords,tags = inference(text2,tokenizer,estimator)
 # print('預測違規機率:',prob,"%\n",tags,keywords)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
