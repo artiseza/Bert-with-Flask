@@ -46,5 +46,4 @@ def run_app():
 
 if __name__ == "__main__": 
     #app.run(debug=True, host='0.0.0.0', port=5555, ssl_context='adhoc')
-    # app.run(debug=True, host='0.0.0.0', port=15588, ssl_context=('/app/html/ssl/openaifab.com/fullchain3.pem', '/app/html/ssl/openaifab.com/privkey3.pem'))
     app.run(debug=True)
