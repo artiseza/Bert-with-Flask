@@ -177,11 +177,18 @@ def getPrediction(in_sentences,tokenizer,estimator):
     return [(sentence, prediction['probabilities'],prediction['labels'], labels[prediction['labels']]) for sentence, prediction in zip(in_sentences, predictions)]
 
 def inference(pred_data,tokenizer,estimator):
+    risk_word = "./data/risk.txt"
+    h_risk_word = "./data/high_risk_words.txt"
+    l_risk_word = "./data/low_risk_words.txt"
+    jieba.load_userdict(risk_word)
+    jieba.load_userdict(h_risk_word)
+    jieba.load_userdict(l_risk_word)
     prob_keyword = {} #存softmax後機率
     score_keyword = {} #存原始預測np to list
     sum_keyword={} #存原始預測np和
     sum_rate = 0
     keywords={} #存output 字分數
+    key_dict={}
     results = getPrediction(pred_data,tokenizer,estimator)
     for i in range(len(results)):
         prob = list(softmax(results[i][1]))
@@ -198,14 +205,20 @@ def inference(pred_data,tokenizer,estimator):
     rate = [ (v[0],v[1]/sum_rate) for v in sorted_list] #算字分數
     for item in rate:
         keywords[item[0]] = round(item[1]*100,2)
-    # word = jieba.lcut(pred_data) #jieba 分詞
-    tags = jieba.analyse.extract_tags(pred_data, topK=5) #jieba 抓關鍵字
-    return round(avg*100,1),keywords,tags
+    word = jieba.lcut(pred_data) #jieba 分詞
+    for keyword in word:
+        prob = 0.0
+        num = len(keyword) 
+        for rate in keyword:
+            prob += keywords[rate]
+        key_dict[keyword] = str(round(prob/num,2))
+    # tags = jieba.analyse.extract_tags(pred_data, topK=5) #jieba 抓關鍵字
+    return round(avg*100,1),key_dict
 
 # test predictor
 # text2 = '天氣真好，做完了準備回家搂。' #label 0
 # # # test2 = '包含適合使用支氣管擴張劑及皮質類固醇組合療法之患有氣喘的兒童與成人，嚴重慢性阻塞性肺部疾病，慢性支氣管炎合肺氣腫，嚴重氣喘，肝功能或腎不全之患者，副作用：頭痛、肌肉痙攣、關節痛、口腔與喉嚨的念珠病菌、肺炎，合併治療，可以協助快速緩解症狀，降低AUR等疾病惡化風險，DUODART，簡易處方資訊，治療具有症狀且攝護腺增大之攝護腺肥大症的第二線治療，減少攝護腺體積、改善尿流速率之效果，Avodart適尿通，治療具有症狀之攝護腺肥大者。而有緩解相關症狀、降低急性尿滯留之發生率、減少攝護腺肥大症相關手術必要性之效果' #label 1
 # from predictor import set_init,inference
 # tokenizer,estimator = set_init()
-# prob,keywords,tags = inference(text2,tokenizer,estimator)
-# print('預測違規機率:',prob,"%\n",tags,keywords)
+# prob,keywords = inference(text2,tokenizer,estimator)
+# print('預測違規機率:',prob,"%\n",keywords)
