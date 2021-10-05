@@ -18,24 +18,24 @@ def run_ZhongYin_api():
             json_list = [{'image': 'there is no filename in form!'}]            
         jsonfile = json.loads(request.form.get('data'))
         predict_data = jsonfile["ad"]
-        state,risk_rate = risk_rule_base(jsonfile)
+        state,risk_rate = risk_rule_base(predict_data)
         print('risk_rate',risk_rate)
         if state =="Illegal":
-            prob,keywords,tags = inference(predict_data,tokenizer,estimator) # 單測試句子 
+            prob,keywords = inference(predict_data,tokenizer,estimator) # 單測試句子 
             prob = 100.0
         elif risk_rate > 0: #高風險加權
-            prob,keywords,tags = inference(predict_data,tokenizer,estimator) # 單測試句子 
+            prob,keywords = inference(predict_data,tokenizer,estimator) # 單測試句子 
             if prob < 50:
                 prob = (prob+50)*0.5
         elif risk_rate < 0: #低風險加權
-            prob,keywords,tags = inference(predict_data,tokenizer,estimator) # 單測試句子  
+            prob,keywords = inference(predict_data,tokenizer,estimator) # 單測試句子  
             if prob > 50:
                 prob = (prob-50)*0.5 
         else:
-            prob,keywords,tags = inference(predict_data,tokenizer,estimator) # 單測試句子    
+            prob,keywords = inference(predict_data,tokenizer,estimator) # 單測試句子    
         rulebase = "欲刊登廣告內容，違反藥事法第69條之機率 : "+str(prob)+'%'
         # rulebase = checkbox_rule_base(predict_data,prob) # checkbox rule base system
-    json_list = [{"result":rulebase,"keywords":keywords,"tags":tags}]
+    json_list = [{"result":rulebase,"keywords":keywords}]
     print(json_list)
     return jsonify(json_list)
 
